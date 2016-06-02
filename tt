@@ -1,0 +1,13 @@
+a=pd.Series(np.random.normal(1,1,10))
+a.plot()
+
+def rule(s):
+    return max(s)
+
+aroll=a.shift(1).rolling(2).apply(rule)
+aroll.plot()
+for aa in a.index:
+    if a[aa]>aroll[aa]*1.2:
+        plt.axvline(aa,color='r')
+frame=pd.DataFrame({'a':a,'aroll':aroll})
+# frame
