@@ -1,13 +1,42 @@
-a=pd.Series(np.random.normal(1,1,10))
-a.plot()
+a=pd.Series(np.random.normal(10,1,300)).diff()
+a=a.diff()
 
-def rule(s):
-    return max(s)
-
-aroll=a.shift(1).rolling(2).apply(rule)
-aroll.plot()
+def ruledown(s):
+    return mean(s)-3*std(s)
+def ruleup(s):
+    return mean(s)+3*std(s)
+arolldown=a.shift(1).rolling(20).apply(ruledown)
+arollup=a.shift(1).rolling(20).apply(ruleup)
+f=plt.figure(figsize=(20,6))
+a.plot(legend=True)
+plt.fill_between(a.index, arolldown, arollup, color='b', alpha=0.2)
 for aa in a.index:
-    if a[aa]>aroll[aa]*1.2:
+    if a[aa]>arollup[aa] or a[aa]<arolldown[aa]:
         plt.axvline(aa,color='r')
-frame=pd.DataFrame({'a':a,'aroll':aroll})
-# frame
+
+
+help(a.plot)
+
+import pandas, numpy as np
+ewma = pandas.stats.moments.ewma
+
+# make a hat function, and add noise
+x = np.linspace(0,1,100)
+x = np.hstack((x,x[::-1]))
+x += np.random.normal( loc=0, scale=0.1, size=200 )
+plot( x, alpha=0.4, label='Raw' )
+
+# take EWMA in both directions with a smaller span term
+fwd = ewma( x, span=15 )          # take EWMA in fwd direction
+bwd = ewma( x[::-1], span=15 )    # take EWMA in bwd direction
+c = np.vstack(( fwd, bwd[::-1] )) # lump fwd and bwd together
+c = np.mean( c, axis=0 )          # average  
+
+# regular EWMA, with bias against trend
+plot( ewma( x, span=20 ), 'b', label='EWMA, span=20' )
+
+# "corrected" (?) EWMA
+plot( c, 'r', label='Reversed-Recombined' )
+
+legend(loc=8)
+savefig( 'ewma_correction.png', fmt='png', dpi=500 )
