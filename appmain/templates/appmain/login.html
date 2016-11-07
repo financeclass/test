@@ -1,0 +1,27 @@
+{% extends 'appmain/base.html' %}
+
+{% block title %}register{% endblock %}
+{% block css %}
+{% endblock %}
+
+
+
+{% block content %}
+    <div>{{ error_msg }}</div>
+    <div>测试账号：demo 123456</div>
+    <form role="form" action="/userlogin/" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="username" style="font-weight: lighter">用户名</label>
+            <input type="text" name="username" value="demo"
+                   class="form-control" id="username">
+        </div>
+        <div class="form-group">
+            <label for="password" style="font-weight: lighter">密码</label>
+            <input type="password" name="password" value="123456"
+                   class="form-control" id="password">
+        </div>
+        <button type="submit" class="btn btn-success">登录~</button>
+        &nbsp;&nbsp;&nbsp;&nbsp;or <a href="/register/" class="btn btn-primary" style="color: white">注册！</a>
+    </form>
+{% endblock %}
